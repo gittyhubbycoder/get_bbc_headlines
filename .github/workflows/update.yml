@@ -5,6 +5,11 @@ on:
     - cron: '0 * * * *'  # every hour
   workflow_dispatch:
 
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *'
+
 jobs:
   update:
     runs-on: ubuntu-latest
