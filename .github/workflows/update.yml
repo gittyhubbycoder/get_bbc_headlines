@@ -1,4 +1,4 @@
-name: Update BBC Headlines
+name: Update BBC Headlines 
 
 on:
   schedule:
