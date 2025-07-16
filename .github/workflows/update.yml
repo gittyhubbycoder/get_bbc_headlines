@@ -28,8 +28,6 @@ jobs:
           titles = re.findall(r'<title>(.*?)</title>', rss)[1:6]"
 with open('headlines.json', 'w') as f:
     json.dump({'titles': titles}, f, indent=2)
-"
-
       - name: ✅ Commit updated JSON
         run: |
           git config user.name "GitHub Action"
