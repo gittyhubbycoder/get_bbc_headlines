@@ -1,31 +1,40 @@
-name: Update BBC Headlines 
+name: Update BBC Headlines
 
 on:
   schedule:
-    - cron: '0 * * * *'  # every hour
-  workflow_dispatch:
-
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: '0 * * * *'
+    - cron: '0 * * * *'    # Runs every hour
+  workflow_dispatch:        # Lets you trigger it manually
 
 jobs:
   update:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: 📥 Checkout repo
         uses: actions/checkout@v3
 
-      - name: Fetch BBC RSS and update JSON
-        run: |
-          pip install requests
-          python update.py
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
 
-      - name: Commit changes
+      - name: 📦 Install requests
+        run: pip install requests
+
+      - name: 📰 Fetch BBC RSS and update headlines.json
+        run: |
+          python -c "
+import requests, re, json
+rss = requests.get('https://feeds.bbci.co.uk/news/rss.xml').text
+titles = re.findall(r'<title>(.*?)</title>', rss)[1:6]
+with open('headlines.json', 'w') as f:
+    json.dump({'titles': titles}, f, indent=2)
+"
+
+      - name: ✅ Commit updated JSON
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
           git add headlines.json
-          git commit -m "Update headlines"
+          git commit -m '🔄 Update BBC headlines'
           git push
