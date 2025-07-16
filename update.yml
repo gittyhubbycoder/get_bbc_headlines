@@ -1,0 +1,26 @@
+name: Update BBC Headlines
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # every hour
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Fetch BBC RSS and update JSON
+        run: |
+          pip install requests
+          python update.py
+
+      - name: Commit changes
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add headlines.json
+          git commit -m "Update headlines"
+          git push
