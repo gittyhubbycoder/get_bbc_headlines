@@ -3,7 +3,7 @@ name: Auto-update BBC Headlines
 on:
   schedule:
     - cron: '0 * * * *'  # Every hour
-  workflow_dispatch:
+  workflow_dispatch:      # Manual trigger
 
 jobs:
   update:
@@ -21,13 +21,23 @@ jobs:
       - name: 📦 Install requests
         run: pip install requests
 
-      - name: 📰 Run update.py
+      - name: 📰 Run update.py to fetch headlines
         run: python update.py
 
-      - name: ✅ Commit updated JSON
+      - name: ✅ Commit updated bbc.json
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
           git add bbc.json
           git commit -m "🔄 Update BBC Top Stories"
           git push
+
+      - name: 📤 Upload to AeonFree via FTP
+        uses: sebastianpopp/ftp-action@v1.2.0
+        with:
+          host: ${{ secrets.FTP_HOST }}
+          user: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          localDir: ./
+          remoteDir: /htdocs/
+          options: "--only-newer"
