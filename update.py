@@ -1,6 +1,11 @@
 import requests, re, json
 
-rss = requests.get("https://feeds.bbci.co.uk/news/rss.xml").text
-titles = re.findall(r"<title>(.*?)</title>", rss)[1:6]
-with open("headlines.json", "w") as f:
-    json.dump({ "titles": titles }, f, indent=2)
+rss_url = "https://feeds.bbci.co.uk/news/rss.xml"
+rss = requests.get(rss_url).text
+
+# Extract titles using regex
+titles = re.findall(r"<title>(.*?)</title>", rss)[1:6]  # Skip the first <title> (BBC News - Home)
+
+# Save to JSON
+with open("bbc.json", "w", encoding="utf-8") as f:
+    json.dump({"titles": titles}, f, indent=2)
