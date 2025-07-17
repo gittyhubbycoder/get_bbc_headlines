@@ -1,8 +1,8 @@
-name: Update BBC Headlines
+name: Auto-update BBC Headlines
 
 on:
   schedule:
-    - cron: '0 * * * *'    # Hourly
+    - cron: '0 * * * *'  # Every hour
   workflow_dispatch:
 
 jobs:
@@ -21,13 +21,13 @@ jobs:
       - name: 📦 Install requests
         run: pip install requests
 
-      - name: 📰 Run update.py to refresh headlines.json
+      - name: 📰 Run update.py
         run: python update.py
 
       - name: ✅ Commit updated JSON
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
-          git add headlines.json
-          git commit -m "🔄 Update BBC headlines"
+          git add bbc.json
+          git commit -m "🔄 Update BBC Top Stories"
           git push
