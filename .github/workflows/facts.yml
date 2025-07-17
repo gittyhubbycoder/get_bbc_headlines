@@ -1,0 +1,30 @@
+name: 🧠 Update Trivia Facts
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Every hour
+  workflow_dispatch:
+
+jobs:
+  update-facts:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repo
+        uses: actions/checkout@v3
+
+      - name: 🧠 Install dependencies
+        run: pip install requests
+
+      - name: 🧠 Run update_facts.py
+        run: python update_facts.py
+
+      - name: 📤 Upload facts.json via FTP
+        uses: sebastianpopp/ftp-action@v2
+        with:
+          host: ${{ secrets.FTP_HOST }}
+          user: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          localDir: ./deploy
+          remoteDir: /htdocs/
+          include: facts.json
