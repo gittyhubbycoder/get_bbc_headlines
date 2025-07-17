@@ -1,12 +1,12 @@
-name: Auto-update BBC Headlines
+name: Auto-upload to AwardSpace
 
 on:
   schedule:
     - cron: '0 * * * *'  # Every hour
-  workflow_dispatch:      # Manual trigger
+  workflow_dispatch:
 
 jobs:
-  update:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,26 +18,21 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: 📦 Install requests
-        run: pip install requests
-
-      - name: 📰 Run update.py to fetch headlines
-        run: python update.py
-
-      - name: ✅ Commit updated bbc.json
+      - name: 📰 Run update.py
         run: |
-          git config user.name "GitHub Action"
-          git config user.email "action@github.com"
-          git add bbc.json
-          git commit -m "🔄 Update BBC Top Stories"
-          git push
+          pip install requests
+          python update.py
 
-      - name: 📤 Upload to AeonFree via FTP
-        uses: sebastianpopp/ftp-action@v2.0.0
+      - name: 📤 Upload bbc.json to AwardSpace via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          host: ${{ secrets.FTP_HOST }}
-          user: ${{ secrets.FTP_USER }}
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
-          localDir: ./
-          remoteDir: /
-          options: "--only-newer"
+          local-dir: ./
+          server-dir: /htdocs/
+          exclude: |
+            **/.git*
+            **/.github/**
+            update.py
+            *.yml
