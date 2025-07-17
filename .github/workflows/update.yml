@@ -30,4 +30,4 @@ jobs:
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
           local-dir: ./deploy/
-          server-dir: /dadesktopwidget.atwebpages.com
+          server-dir: /dadesktopwidget.atwebpages.com/
