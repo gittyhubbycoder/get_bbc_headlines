@@ -13,5 +13,5 @@ for _ in range(7):
         facts.append(clean_fact(fact))
 
 # Save to JSON file
-with open("facts.json", "w") as f:
+with open("deploy/facts.json", "w") as f:
     json.dump(facts, f, indent=2)
